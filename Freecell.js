@@ -1,15 +1,3 @@
-var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
-if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
-{
-  let window = _____WB$wombat$assign$function_____("window");
-  let self = _____WB$wombat$assign$function_____("self");
-  let document = _____WB$wombat$assign$function_____("document");
-  let location = _____WB$wombat$assign$function_____("location");
-  let top = _____WB$wombat$assign$function_____("top");
-  let parent = _____WB$wombat$assign$function_____("parent");
-  let frames = _____WB$wombat$assign$function_____("frames");
-  let opener = _____WB$wombat$assign$function_____("opener");
-
 
 function dblclick(ev) {
     ev.preventDefault();
@@ -30,6 +18,10 @@ function dragEnter(ev) {
 }
 
 function dragStart(ev) {
+    if (!Joker(ev.target.id).isAltSerie()) {
+        ev.preventDefault();
+        return false;
+    }
     if (ev.dataTransfer)
         ev.dataTransfer.setData("Text", ev.target.id);
 }
@@ -167,29 +159,6 @@ function createCard(id) {
     return card;
 }
 
-function zoom() {
-    var w = window, d = document, e = d.documentElement, g = d.getElementsByTagName('body')[0], x = w.innerWidth || e.clientWidth || g.clientWidth, y = w.innerHeight || e.clientHeight || g.clientHeight;
-
-    if (typeof g.style.zoom !== 'undefined' && !navigator.userAgent.match(/(iphone|ipod|ipad|android)/gi)) {
-        var scale = x / 1348;
-        g.style.zoom = scale;
-    } 
-    else {
-        // Apply scale transform as a fallback
-        transformElement(g, 'translate(-50%, -50%) scale(' + scale + ') translate(50%, 50%)');
-    }
-}
-
-function transformElement(element, transform) {
-
-    element.style.WebkitTransform = transform;
-    element.style.MozTransform = transform;
-    element.style.msTransform = transform;
-    element.style.OTransform = transform;
-    element.style.transform = transform;
-
-}
-
 function afterDrop() {
     var ed = Joker('d0').getTopCard();
     var es = Joker('s0').getTopCard();
@@ -231,26 +200,3 @@ function afterDrop() {
 }
 
 init();
-
-}
-/*
-     FILE ARCHIVED ON 03:11:25 Dec 11, 2018 AND RETRIEVED FROM THE
-     INTERNET ARCHIVE ON 19:50:50 Sep 25, 2020.
-     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
-
-     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
-     SECTION 108(a)(3)).
-*/
-/*
-playback timings (ms):
-  esindex: 0.008
-  exclusion.robots.policy: 0.136
-  exclusion.robots: 0.145
-  RedisCDXSource: 23.458
-  PetaboxLoader3.datanode: 221.914 (4)
-  captures_list: 304.807
-  LoadShardBlock: 256.778 (3)
-  CDXLines.iter: 21.649 (3)
-  PetaboxLoader3.resolve: 258.001 (2)
-  load_resource: 283.294
-*/
