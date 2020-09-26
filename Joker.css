@@ -1,0 +1,271 @@
+
+body {
+    background-color: #113766;
+    background: radial-gradient(circle, rgba(17,55,102,1) 0%, rgba(13,37,68,1) 90%);
+    color: #666;
+    width: 1328px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+section {
+    display: block;
+    width: 146px;
+    height: 198px;
+    float: left;
+    -webkit-box-shadow: 0 0px 12px rgba(255,0,0,0.1);
+    box-shadow: 0 0px 12px rgba(255,0,0,0.1);
+    margin: 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+article {
+    display: block;
+    width: 146px;
+    height: 168px;
+    padding-top: 30px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 0px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 0px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    cursor: move;
+}
+
+article[data-side=back] {
+    display: block;
+    width: 146px;
+    height: 188px;
+    padding-top: 10px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 0px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 0px 12px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    cursor: move;
+}
+
+section#d0 article,
+section#h0 article,
+section#s0 article,
+section#c0 article {
+    padding-top: 0;
+    height: 198px;
+}
+
+article:empty {
+    padding-top: 0;
+    height: 198px;
+}
+
+#d1 {
+    background-image: url('Content/1_d.png');
+}
+
+#d2 {
+    background-image: url('Content/2_d.png');
+}
+
+#d3 {
+    background-image: url('Content/3_d.png');
+}
+
+#d4 {
+    background-image: url('Content/4_d.png');
+}
+
+#d5 {
+    background-image: url('Content/5_d.png');
+}
+
+#d6 {
+    background-image: url('Content/6_d.png');
+}
+
+#d7 {
+    background-image: url('Content/7_d.png');
+}
+
+#d8 {
+    background-image: url('Content/8_d.png');
+}
+
+#d9 {
+    background-image: url('Content/9_d.png');
+}
+
+#d10 {
+    background-image: url('Content/10_d.png');
+}
+
+#d11 {
+    background-image: url('Content/11_d.png');
+}
+
+#d12 {
+    background-image: url('Content/12_d.png');
+}
+
+#d13 {
+    background-image: url('Content/13_d.png');
+}
+
+#c1 {
+    background-image: url('Content/1_c.png');
+}
+
+#c2 {
+    background-image: url('Content/2_c.png');
+}
+
+#c3 {
+    background-image: url('Content/3_c.png');
+}
+
+#c4 {
+    background-image: url('Content/4_c.png');
+}
+
+#c5 {
+    background-image: url('Content/5_c.png');
+}
+
+#c6 {
+    background-image: url('Content/6_c.png');
+}
+
+#c7 {
+    background-image: url('Content/7_c.png');
+}
+
+#c8 {
+    background-image: url('Content/8_c.png');
+}
+
+#c9 {
+    background-image: url('Content/9_c.png');
+}
+
+#c10 {
+    background-image: url('Content/10_c.png');
+}
+
+#c11 {
+    background-image: url('Content/11_c.png');
+}
+
+#c12 {
+    background-image: url('Content/12_c.png');
+}
+
+#c13 {
+    background-image: url('Content/13_c.png');
+}
+
+#h1 {
+    background-image: url('Content/1_h.png');
+}
+
+#h2 {
+    background-image: url('Content/2_h.png');
+}
+
+#h3 {
+    background-image: url('Content/3_h.png');
+}
+
+#h4 {
+    background-image: url('Content/4_h.png');
+}
+
+#h5 {
+    background-image: url('Content/5_h.png');
+}
+
+#h6 {
+    background-image: url('Content/6_h.png');
+}
+
+#h7 {
+    background-image: url('Content/7_h.png');
+}
+
+#h8 {
+    background-image: url('Content/8_h.png');
+}
+
+#h9 {
+    background-image: url('Content/9_h.png');
+}
+
+#h10 {
+    background-image: url('Content/10_h.png');
+}
+
+#h11 {
+    background-image: url('Content/11_h.png');
+}
+
+#h12 {
+    background-image: url('Content/12_h.png');
+}
+
+#h13 {
+    background-image: url('Content/13_h.png');
+}
+
+#s1 {
+    background-image: url('Content/1_s.png');
+}
+
+#s2 {
+    background-image: url('Content/2_s.png');
+}
+
+#s3 {
+    background-image: url('Content/3_s.png');
+}
+
+#s4 {
+    background-image: url('Content/4_s.png');
+}
+
+#s5 {
+    background-image: url('Content/5_s.png');
+}
+
+#s6 {
+    background-image: url('Content/6_s.png');
+}
+
+#s7 {
+    background-image: url('Content/7_s.png');
+}
+
+#s8 {
+    background-image: url('Content/8_s.png');
+}
+
+#s9 {
+    background-image: url('Content/9_s.png');
+}
+
+#s10 {
+    background-image: url('Content/10_s.png');
+}
+
+#s11 {
+    background-image: url('Content/11_s.png');
+}
+
+#s12 {
+    background-image: url('Content/12_s.png');
+}
+
+#s13 {
+    background-image: url('Content/13_s.png');
+}
+
+article[data-side=back] {
+    background-image:url('Content/back.png') !important;
+    background-color: #9c150e;
+}
