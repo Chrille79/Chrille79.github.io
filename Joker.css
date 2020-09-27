@@ -30,6 +30,13 @@ article {
     transition: margin 0.3s ease;
 }
 
+section#c0 article, 
+section#s0 article, 
+section#d0 article, 
+section#h0 article{
+    padding-top: 0;
+}
+
 article:hover > article:not(:hover) {
     margin-top: 10%;
 }
