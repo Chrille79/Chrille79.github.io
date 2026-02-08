@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chrille79 Games</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0a0020 0%, #1a0040 40%, #0d0030 100%);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #e0d0ff;
+      overflow-x: hidden;
+    }
+
+    /* Starfield */
+    .stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; }
+      100% { opacity: 1; }
+    }
+
+    /* Grid floor */
+    .grid-floor {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%; height: 40%;
+      background:
+        linear-gradient(transparent 0%, rgba(138, 43, 226, 0.08) 100%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(138, 43, 226, 0.15) 0px,
+          rgba(138, 43, 226, 0.15) 1px,
+          transparent 1px,
+          transparent 80px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(138, 43, 226, 0.12) 0px,
+          rgba(138, 43, 226, 0.12) 1px,
+          transparent 1px,
+          transparent 80px
+        );
+      transform: perspective(400px) rotateX(45deg);
+      transform-origin: bottom center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 80px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #fff;
+      text-shadow:
+        0 0 10px rgba(0, 255, 255, 0.8),
+        0 0 30px rgba(0, 255, 255, 0.5),
+        0 0 60px rgba(0, 255, 255, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      color: rgba(200, 180, 255, 0.7);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 380px));
+      gap: 40px;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .game-card {
+      position: relative;
+      background: rgba(20, 10, 50, 0.7);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      border-radius: 16px;
+      padding: 40px 30px 30px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent);
+      box-shadow:
+        0 0 20px rgba(138, 43, 226, 0.2),
+        0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+    .game-card:hover::before {
+      opacity: 1;
+    }
+
+    .game-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .game-card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      text-shadow: 0 0 15px var(--accent);
+    }
+
+    .game-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: rgba(200, 180, 255, 0.75);
+      margin-bottom: 20px;
+    }
+
+    .play-btn {
+      display: inline-block;
+      padding: 10px 28px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: all 0.25s;
+    }
+    .game-card:hover .play-btn {
+      background: var(--accent);
+      color: #0a0020;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .game-card.brickout { --accent: #00e5ff; --accent-glow: rgba(0, 229, 255, 0.4); }
+    .game-card.freecell { --accent: #ff6ec7; --accent-glow: rgba(255, 110, 199, 0.4); }
+
+    .footer {
+      margin-top: 80px;
+      font-size: 0.8rem;
+      color: rgba(200, 180, 255, 0.35);
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars" id="stars"></div>
+  <div class="grid-floor"></div>
+
+  <div class="content">
+    <h1>Chrille79</h1>
+    <p class="subtitle">Game Arcade</p>
+
+    <div class="games-grid">
+
+      <a href="Brickout/" class="game-card brickout">
+        <span class="game-icon">&#127918;</span>
+        <h2>Brickout</h2>
+        <p>Modern neon brick-breaking med 100 banor, powerups, partiklar och synthwave-soundtrack. Kan du klara alla nivåer?</p>
+        <span class="play-btn">Spela nu</span>
+      </a>
+
+      <a href="freecell.html" class="game-card freecell">
+        <span class="game-icon">&#127183;</span>
+        <h2>Freecell</h2>
+        <p>Klassisk Freecell-patiens i webbläsaren. Testa din strategi och tålamod med denna tidlösa kortspelsklassiker.</p>
+        <span class="play-btn">Spela nu</span>
+      </a>
+
+    </div>
+
+    <p class="footer">chrille79.github.io</p>
+  </div>
+
+  <script>
+    // Generate starfield
+    const container = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.setProperty('--dur', (1.5 + Math.random() * 3) + 's');
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      if (Math.random() > 0.7) {
+        star.style.width = '3px';
+        star.style.height = '3px';
+      }
+      container.appendChild(star);
+    }
+  </script>
+
+</body>
+</html>
