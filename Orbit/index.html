@@ -2,81 +2,160 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ORBIT - Space Tube Racer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#020308" />
+  <meta name="description" content="A fast-paced 3D space tube racing game" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./apple-touch-icon-180x180.png" />
+  <title>ORBIT — Space Tube Racer</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #020308; }
     canvas { display: block; width: 100%; height: 100%; }
-    #hud {
+
+    /* HUD overlay */
+    aside[data-hud] {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none; font-family: monospace;
     }
-    #stats {
+
+    /* Debug stats */
+    output[data-stats] {
+      display: block;
       position: absolute; top: 10px; left: 10px;
       color: rgba(0, 200, 255, 0.7); font-family: monospace; font-size: 12px;
       line-height: 1.5; pointer-events: none; white-space: pre;
     }
-    /* Health bar - bottom left, top of bar stack */
-    .hud-health { position: absolute; bottom: 70px; left: 20px; width: 200px; height: 8px; }
-    .hud-health-bg { width: 100%; height: 100%; background: rgba(20,20,40,0.7); border: 1px solid rgba(255,60,60,0.47); }
-    .hud-health-fill { position: absolute; top: 1px; right: 1px; height: 6px; background: rgb(255,60,60); transition: width 0.05s, background 0.3s; }
-    /* Boost bar - bottom left, between health and speed */
-    .hud-boost { position: absolute; bottom: 54px; left: 20px; width: 200px; height: 8px; }
-    .hud-boost-bg { width: 100%; height: 100%; background: rgba(20,20,40,0.7); border: 1px solid rgba(0,150,255,0.47); }
-    .hud-boost-fill { position: absolute; top: 1px; left: 1px; height: 6px; background: rgb(0,150,255); transition: width 0.05s, background 0.3s; }
-    /* Speed bar - bottom left */
-    .hud-speed { position: absolute; bottom: 40px; left: 20px; width: 200px; height: 12px; }
-    .hud-speed-bg { width: 100%; height: 100%; background: rgba(20,20,40,0.7); border: 1px solid rgba(0,200,255,0.47); }
-    .hud-speed-fill { position: absolute; top: 1px; left: 1px; height: 10px; background: rgb(0,200,255); transition: width 0.05s; }
-    .hud-speed-ticks { position: absolute; top: -2px; left: 0; width: 100%; height: 16px; }
-    .hud-speed-tick { position: absolute; top: 0; width: 1px; height: 100%; background: rgba(0,200,255,0.3); }
-    /* Progress bar - bottom center */
-    .hud-progress { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); width: 300px; height: 12px; }
-    .hud-progress-bg { width: 100%; height: 100%; background: rgba(20,20,40,0.7); border: 1px solid rgba(0,255,150,0.47); }
-    .hud-progress-fill { position: absolute; top: 1px; left: 1px; height: 10px; background: rgba(0,255,150,0.78); transition: width 0.05s; }
-    .hud-checkpoint-marker { position: absolute; top: -4px; width: 2px; height: 20px; background: rgba(255,200,0,0.78); }
-    /* Checkpoint indicators - bottom right */
-    .hud-checkpoints { position: absolute; bottom: 40px; right: 20px; display: flex; gap: 4px; }
-    .hud-cp { width: 12px; height: 12px; border: 1px solid rgba(255,200,0,0.3); background: rgba(40,40,60,0.7); }
-    .hud-cp.active { background: rgba(255,200,0,0.86); }
-    /* Timer - top center */
-    .hud-timer { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 200px; height: 12px; }
-    .hud-timer-bg { width: 100%; height: 100%; background: rgba(20,20,40,0.7); border: 1px solid rgba(255,255,255,0.3); }
-    .hud-timer-fill { position: absolute; top: 1px; left: 1px; height: 10px; background: rgba(255,255,255,0.6); transition: width 0.1s; }
-    .hud-timer-ticks { position: absolute; top: -2px; left: 0; width: 100%; height: 16px; }
-    .hud-timer-tick { position: absolute; top: 0; width: 1px; height: 100%; background: rgba(255,255,255,0.24); }
+
+    /* Shared bar styles */
+    aside[data-hud] > section {
+      position: absolute;
+    }
+    aside[data-hud] > section > [role="meter"] {
+      position: absolute;
+    }
+
+    /* Health bar */
+    section[data-bar="health"] {
+      bottom: 70px; left: 20px; width: 200px; height: 8px;
+      background: rgba(20,20,40,0.7); border: 1px solid rgba(255,60,60,0.47);
+    }
+    section[data-bar="health"] > [role="meter"] {
+      top: 1px; right: 1px; height: 6px; background: rgb(255,60,60);
+      transition: width 0.05s, background 0.3s;
+    }
+
+    /* Boost bar */
+    section[data-bar="boost"] {
+      bottom: 54px; left: 20px; width: 200px; height: 8px;
+      background: rgba(20,20,40,0.7); border: 1px solid rgba(0,150,255,0.47);
+    }
+    section[data-bar="boost"] > [role="meter"] {
+      top: 1px; left: 1px; height: 6px; background: rgb(0,150,255);
+      transition: width 0.05s, background 0.3s;
+    }
+
+    /* Speed bar */
+    section[data-bar="speed"] {
+      bottom: 40px; left: 20px; width: 200px; height: 12px;
+      background: rgba(20,20,40,0.7); border: 1px solid rgba(0,200,255,0.47);
+    }
+    section[data-bar="speed"] > [role="meter"] {
+      top: 1px; left: 1px; height: 10px; background: rgb(0,200,255);
+      transition: width 0.05s;
+    }
+    section[data-bar="speed"] > mark {
+      position: absolute; top: -2px; width: 1px; height: 16px;
+      background: rgba(0,200,255,0.3);
+    }
+
+    /* Progress bar */
+    section[data-bar="progress"] {
+      bottom: 40px; left: 50%; transform: translateX(-50%); width: 300px; height: 12px;
+      background: rgba(20,20,40,0.7); border: 1px solid rgba(0,255,150,0.47);
+    }
+    section[data-bar="progress"] > [role="meter"] {
+      top: 1px; left: 1px; height: 10px; background: rgba(0,255,150,0.78);
+      transition: width 0.05s;
+    }
+    section[data-bar="progress"] mark {
+      position: absolute; top: -4px; width: 2px; height: 20px;
+      background: rgba(255,200,0,0.78);
+    }
+
+    /* Checkpoint indicators */
+    ol[data-checkpoints] {
+      position: absolute; bottom: 40px; right: 20px; display: flex; gap: 4px;
+      list-style: none;
+    }
+    ol[data-checkpoints] > li {
+      width: 12px; height: 12px; border: 1px solid rgba(255,200,0,0.3);
+      background: rgba(40,40,60,0.7);
+    }
+    ol[data-checkpoints] > li[aria-checked="true"] {
+      background: rgba(255,200,0,0.86);
+    }
+
+    /* Timer bar */
+    section[data-bar="timer"] {
+      top: 20px; left: 50%; transform: translateX(-50%); width: 200px; height: 12px;
+      background: rgba(20,20,40,0.7); border: 1px solid rgba(255,255,255,0.3);
+    }
+    section[data-bar="timer"] > [role="meter"] {
+      top: 1px; left: 1px; height: 10px; background: rgba(255,255,255,0.6);
+      transition: width 0.1s;
+    }
+    section[data-bar="timer"] > mark {
+      position: absolute; top: -2px; width: 1px; height: 16px;
+      background: rgba(255,255,255,0.24);
+    }
+
     /* Lap display */
-    .hud-lap-time {
+    time[data-lap-time] {
       position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
       color: rgba(255,255,255,0.9); font-family: monospace; font-size: 20px;
       text-shadow: 0 0 8px rgba(0,200,255,0.5);
     }
-    .hud-lap-count {
+    output[data-lap-count] {
+      display: block;
       position: absolute; top: 64px; left: 50%; transform: translateX(-50%);
       color: rgba(0,200,255,0.7); font-family: monospace; font-size: 12px;
     }
-    .hud-best-time {
+    time[data-best-time] {
       position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
       color: rgba(255,200,0,0.6); font-family: monospace; font-size: 11px;
     }
-    .hud-split {
+    output[data-split] {
+      display: block;
       position: absolute; top: 98px; left: 50%; transform: translateX(-50%);
       font-family: monospace; font-size: 16px; font-weight: bold;
       transition: opacity 0.5s;
     }
+
+    /* Landscape lock overlay */
+    dialog[data-rotate] {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(2,3,8,0.95); z-index: 100; border: none;
+      flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+      color: rgba(0,200,255,0.8); font-family: monospace; font-size: 14px; text-align: center;
+    }
+    dialog[data-rotate].visible { display: flex; }
+    dialog[data-rotate] svg { width: 64px; height: 64px; opacity: 0.6; }
+
     /* Touch controls */
-    #touch-controls {
+    nav[data-touch] {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none; z-index: 10;
       touch-action: none;
       -webkit-user-select: none; user-select: none;
     }
-    .touch-joystick-area {
+    nav[data-touch] > [data-joystick-area] {
       position: absolute; left: 0; top: 0; width: 50%; height: 100%;
       pointer-events: auto; touch-action: none;
     }
-    .touch-joystick-base {
+    nav[data-touch] [data-joystick-base] {
       position: absolute; left: 80px; bottom: 120px;
       width: 120px; height: 120px;
       margin-left: -60px; margin-top: -60px;
@@ -86,12 +165,12 @@
       pointer-events: none;
       transition: opacity 0.2s;
     }
-    .touch-joystick-base.active {
+    nav[data-touch] [data-joystick-base].active {
       position: fixed;
       border-color: rgba(0,200,255,0.3);
       background: radial-gradient(circle, rgba(0,200,255,0.08) 0%, transparent 70%);
     }
-    .touch-joystick-knob {
+    nav[data-touch] [data-joystick-knob] {
       position: fixed; width: 50px; height: 50px;
       margin-left: -25px; margin-top: -25px;
       border-radius: 50%;
@@ -99,7 +178,7 @@
       border: 2px solid rgba(0,200,255,0.5);
       pointer-events: none;
     }
-    .touch-boost-btn {
+    nav[data-touch] > button {
       position: absolute; right: 30px; bottom: 100px;
       width: 80px; height: 80px; border-radius: 50%;
       background: rgba(0,100,255,0.25);
@@ -109,54 +188,81 @@
       pointer-events: auto; touch-action: none;
       -webkit-user-select: none; user-select: none;
     }
-    .touch-boost-btn.active {
+    nav[data-touch] > button.active {
       background: rgba(0,150,255,0.5);
       border-color: rgba(100,200,255,0.8);
       color: rgba(255,255,255,0.9);
     }
+
+    /* Small screens (phones in landscape) */
+    @media (max-height: 500px) {
+      section[data-bar="health"] { bottom: 38px; left: 10px; width: 120px; height: 5px; }
+      section[data-bar="health"] > [role="meter"] { height: 3px; }
+      section[data-bar="boost"] { bottom: 28px; left: 10px; width: 120px; height: 5px; }
+      section[data-bar="boost"] > [role="meter"] { height: 3px; }
+      section[data-bar="speed"] { bottom: 16px; left: 10px; width: 120px; height: 8px; }
+      section[data-bar="speed"] > [role="meter"] { height: 6px; }
+      section[data-bar="speed"] > mark { height: 12px; top: -2px; }
+      section[data-bar="progress"] { bottom: 16px; width: 180px; height: 8px; }
+      section[data-bar="progress"] > [role="meter"] { height: 6px; }
+      section[data-bar="progress"] mark { top: -3px; height: 14px; }
+      ol[data-checkpoints] { bottom: 16px; right: 10px; }
+      ol[data-checkpoints] > li { width: 8px; height: 8px; }
+      section[data-bar="timer"] { top: 8px; width: 140px; height: 8px; }
+      section[data-bar="timer"] > [role="meter"] { height: 6px; }
+      section[data-bar="timer"] > mark { height: 12px; }
+      time[data-lap-time] { top: 22px; font-size: 14px; }
+      output[data-lap-count] { top: 38px; font-size: 10px; }
+      time[data-best-time] { top: 50px; font-size: 9px; }
+      output[data-split] { top: 62px; font-size: 12px; }
+      output[data-stats] { font-size: 10px; top: 5px; left: 5px; }
+      nav[data-touch] > button { right: 16px; bottom: 50px; width: 60px; height: 60px; font-size: 9px; }
+      nav[data-touch] [data-joystick-base] { width: 90px; height: 90px; margin-left: -45px; margin-top: -45px; left: 60px; bottom: 70px; }
+    }
   </style>
-  <script type="module" crossorigin src="./assets/index-BR6Zx4pn.js"></script>
-</head>
+  <script type="module" crossorigin src="./assets/index-u-bWxX6r.js"></script>
+<link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
 <body>
-  <div id="stats"></div>
-  <div id="hud">
-    <div class="hud-health">
-      <div class="hud-health-bg"></div>
-      <div class="hud-health-fill" id="health-fill"></div>
-    </div>
-    <div class="hud-boost">
-      <div class="hud-boost-bg"></div>
-      <div class="hud-boost-fill" id="boost-fill"></div>
-    </div>
-    <div class="hud-speed">
-      <div class="hud-speed-bg"></div>
-      <div class="hud-speed-fill" id="speed-fill"></div>
-      <div class="hud-speed-ticks">
-        <div class="hud-speed-tick" style="left:25%"></div>
-        <div class="hud-speed-tick" style="left:50%"></div>
-        <div class="hud-speed-tick" style="left:75%"></div>
-      </div>
-    </div>
-    <div class="hud-progress">
-      <div class="hud-progress-bg"></div>
-      <div class="hud-progress-fill" id="progress-fill"></div>
-      <div id="checkpoint-markers"></div>
-    </div>
-    <div class="hud-checkpoints" id="checkpoint-indicators"></div>
-    <div class="hud-timer">
-      <div class="hud-timer-bg"></div>
-      <div class="hud-timer-fill" id="timer-fill"></div>
-      <div class="hud-timer-ticks">
-        <div class="hud-timer-tick" style="left:20%"></div>
-        <div class="hud-timer-tick" style="left:40%"></div>
-        <div class="hud-timer-tick" style="left:60%"></div>
-        <div class="hud-timer-tick" style="left:80%"></div>
-      </div>
-    </div>
-    <div class="hud-lap-time" id="lap-time">00:00.000</div>
-    <div class="hud-lap-count" id="lap-count">LAP 1</div>
-    <div class="hud-best-time" id="best-time"></div>
-    <div class="hud-split" id="split-time"></div>
-  </div>
+  <dialog data-rotate id="rotate-overlay">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="6" width="20" height="12" rx="2"/>
+      <path d="M18 12h.01"/>
+    </svg>
+    <p>Rotera till liggande läge</p>
+  </dialog>
+
+  <output data-stats id="stats"></output>
+
+  <aside data-hud>
+    <section data-bar="health">
+      <div role="meter" id="health-fill"></div>
+    </section>
+    <section data-bar="boost">
+      <div role="meter" id="boost-fill"></div>
+    </section>
+    <section data-bar="speed">
+      <div role="meter" id="speed-fill"></div>
+      <mark style="left:25%"></mark>
+      <mark style="left:50%"></mark>
+      <mark style="left:75%"></mark>
+    </section>
+    <section data-bar="progress">
+      <div role="meter" id="progress-fill"></div>
+      <span id="checkpoint-markers"></span>
+    </section>
+    <ol data-checkpoints id="checkpoint-indicators"></ol>
+    <section data-bar="timer">
+      <div role="meter" id="timer-fill"></div>
+      <mark style="left:20%"></mark>
+      <mark style="left:40%"></mark>
+      <mark style="left:60%"></mark>
+      <mark style="left:80%"></mark>
+    </section>
+    <time data-lap-time id="lap-time">00:00.000</time>
+    <output data-lap-count id="lap-count">LAP 1</output>
+    <time data-best-time id="best-time"></time>
+    <output data-split id="split-time"></output>
+  </aside>
+
 </body>
 </html>
