@@ -1,0 +1,46 @@
+{
+  "name": "Default Circuit",
+  "segments": [
+    { "type": "Straight", "length": 40, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveLeft", "length": 25, "profile": "HalfPipe" },
+    { "type": "Straight", "length": 20, "profile": "HalfPipe" },
+    { "type": "CurveRight", "length": 25, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "FullTunnel", "checkpoint": true },
+    { "type": "CurveUp", "length": 25, "profile": "FullTunnel" },
+    { "type": "Straight", "length": 30, "profile": "FullTunnel" },
+    { "type": "CurveDown", "length": 25, "profile": "FullTunnel" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveRight", "length": 20, "profile": "HalfPipe" },
+    { "type": "CurveLeft", "length": 20, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 40, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveLeft", "length": 125.66, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 40, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveRight", "length": 25, "profile": "HalfPipe" },
+    { "type": "Straight", "length": 20, "profile": "HalfPipe" },
+    { "type": "CurveLeft", "length": 25, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "FullTunnel", "checkpoint": true },
+    { "type": "CurveDown", "length": 25, "profile": "FullTunnel" },
+    { "type": "Straight", "length": 30, "profile": "FullTunnel" },
+    { "type": "CurveUp", "length": 25, "profile": "FullTunnel" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveLeft", "length": 20, "profile": "HalfPipe" },
+    { "type": "CurveRight", "length": 20, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 40, "profile": "HalfPipe" },
+
+    { "type": "Straight", "length": 10, "profile": "HalfPipe", "checkpoint": true },
+    { "type": "CurveLeft", "length": 125.66, "profile": "HalfPipe" }
+  ]
+}
