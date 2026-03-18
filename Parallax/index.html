@@ -4,9 +4,7 @@
 <head>
     <title>Freecell</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A little game made in html and javascript">
     <meta charset="UTF-8">
-    <link rel="shortcut icon" href="favicon.ico" />
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <style>
         body {
@@ -30,7 +28,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-size: cover;
+            background-size: auto 100%;
             background-repeat: repeat-x;
             animation-name: MOVE-BG;
             animation-timing-function: linear;
@@ -39,50 +37,50 @@
 
         #layer1 {
             background-image: url('01_Mist.png');
-            animation-duration: 10s;
+            animation-duration: 5s;
             animation-timing-function: ease;
         }
 
         #layer2 {
             background-image: url('02_Bushes.png');
-            animation-duration: 15s;
+            animation-duration: 10s;
         }
 
         #layer3 {
             background-image: url('03_Particles.png');
-            animation-duration: 20s;
+            animation-duration: 15s;
             animation-timing-function: ease-in-out;
         }
 
         #layer4 {
             background-image: url('04_Forest.png');
-            animation-duration: 25s;
+            animation-duration: 20s;
         }
 
         #layer5 {
             background-image: url('05_Particles.png');
-            animation-duration: 30s;
+            animation-duration: 25s;
             animation-timing-function: ease-in-out;
         }
 
         #layer6 {
             background-image: url('06_Forest.png');
-            animation-duration: 35s;
+            animation-duration: 30s;
         }
 
         #layer7 {
             background-image: url('07_Forest.png');
-            animation-duration: 40s;
+            animation-duration: 35s;
         }
 
         #layer8 {
             background-image: url('08_Forest.png');
-            animation-duration: 45s;
+            animation-duration: 40s;
         }
 
         #layer9 {
             background-image: url('09_Forest.png');
-            animation-duration: 50s;
+            animation-duration: 45s;
         }
 
 
@@ -101,13 +99,21 @@
             }
 
             to {
-                background-position-x: 1920px;
+                background-position-x: var(--tile-width);
             }
         }
     </style>
 </head>
 
 <body>
+    <script>
+        function updateTileWidth() {
+            const tileW = window.innerHeight * (1920 / 1080);
+            document.documentElement.style.setProperty('--tile-width', tileW + 'px');
+        }
+        updateTileWidth();
+        window.addEventListener('resize', updateTileWidth);
+    </script>
     <article id="parallax">
         <section id="layer9"></section>
         <section id="layer8"></section>
