@@ -118,6 +118,8 @@
     .game-card {
       position: relative;
       flex: 0 1 340px;
+      display: flex;
+      flex-direction: column;
       background: rgba(20, 10, 50, 0.7);
       border: 1px solid rgba(138, 43, 226, 0.3);
       border-radius: 16px;
@@ -167,6 +169,7 @@
     }
 
     .game-card p {
+      flex: 1;
       font-size: 0.95rem;
       line-height: 1.5;
       color: rgba(200, 180, 255, 0.75);
@@ -215,6 +218,11 @@
     .game-card.parallax {
       --accent: #66ff66;
       --accent-glow: rgba(102, 255, 102, 0.4);
+    }
+
+    .game-card.tictactoe {
+      --accent: #ff9f43;
+      --accent-glow: rgba(255, 159, 67, 0.4);
     }
 
     .footer {
@@ -275,6 +283,13 @@
         <p>Animerad parallax-skog med flera lager som rör sig i olika hastigheter. En lugn resa genom en digital skog.
         </p>
         <span class="play-btn">Visa</span>
+      </a>
+
+      <a href="tictactoe/" class="game-card tictactoe">
+        <span class="game-icon">&#129504;</span>
+        <h2>TicTacToe — Neuralt Nätverk</h2>
+        <p>Spela tre-i-rad mot ett träningsbart neuralt nätverk. Se vikter, aktiveringar och backpropagation visualiseras i realtid.</p>
+        <span class="play-btn">Spela nu</span>
       </a>
 
     </div>
