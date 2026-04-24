@@ -225,6 +225,11 @@
       --accent-glow: rgba(255, 159, 67, 0.4);
     }
 
+    .game-card.llm {
+      --accent: #00e590;
+      --accent-glow: rgba(0, 229, 144, 0.4);
+    }
+
     .footer {
       margin-top: 80px;
       font-size: 0.8rem;
@@ -290,6 +295,13 @@
         <h2>TicTacToe — Neuralt Nätverk</h2>
         <p>Spela tre-i-rad mot ett träningsbart neuralt nätverk. Se vikter, aktiveringar och backpropagation visualiseras i realtid.</p>
         <span class="play-btn">Spela nu</span>
+      </a>
+
+      <a href="llm/" class="game-card llm">
+        <span class="game-icon">&#128221;</span>
+        <h2>LLM från grunden</h2>
+        <p>En liten transformer tränas och genererar text, helt i browsern. Se attention-heatmaps, loss-grafer och handskriven backprop på CPU eller GPU.</p>
+        <span class="play-btn">Utforska</span>
       </a>
 
     </div>
