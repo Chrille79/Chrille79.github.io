@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boost — Baneditor</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --panel: #141b24;
+        --panel2: #1b2530;
+        --line: #2a3742;
+        --text: #dfe7ee;
+        --muted: #8aa0b0;
+        --accent: #46b1ff;
+        --accent2: #ffb454;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; height: 100%; overflow: hidden;
+        background: var(--bg); color: var(--text);
+        font-family: system-ui, sans-serif; font-size: 13px;
+      }
+      #app { display: flex; flex-direction: column; height: 100vh; }
+
+      #toolbar {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line);
+      }
+      #toolbar .sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+      #toolbar .grow { flex: 1; }
+      button, input[type="text"] {
+        font: inherit; color: var(--text); background: var(--panel2);
+        border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; cursor: pointer;
+      }
+      button:hover { border-color: var(--accent); }
+      button.primary { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 600; }
+      #tools { display: inline-flex; gap: 4px; }
+      .tool.active { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 600; }
+      #body.no-list #outline { display: none; }
+      input[type="text"] { cursor: text; }
+      label.check { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); cursor: pointer; }
+      #readout { color: var(--muted); font-variant-numeric: tabular-nums; }
+      #readout b { color: var(--text); }
+      #readout .bad { color: #ff7a7a; }
+      #readout .good { color: #6ddf8e; }
+
+      #body { display: flex; flex: 1; min-height: 0; }
+      #palette {
+        width: 250px; background: var(--panel); border-right: 1px solid var(--line);
+        overflow-y: auto; padding: 8px;
+      }
+      #search { width: 100%; margin-bottom: 8px; }
+      .cat { margin-bottom: 6px; }
+      .cat > h3 {
+        margin: 8px 2px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+        color: var(--muted); cursor: pointer; user-select: none;
+      }
+      .cat > h3::before { content: "▾ "; }
+      .cat.collapsed > h3::before { content: "▸ "; }
+      .cat.collapsed .items { display: none; }
+      .items { display: flex; flex-direction: column; gap: 3px; }
+      .item {
+        display: flex; align-items: center; gap: 6px; width: 100%;
+        text-align: left; padding: 4px 7px; font-size: 12px;
+      }
+      .item .turn { margin-left: auto; display: flex; gap: 3px; }
+      .item .turn button { padding: 1px 7px; font-size: 12px; }
+      .item.active { border-color: var(--accent2); color: var(--accent2); }
+      .item.disabled { opacity: .3; pointer-events: none; }
+      .item.dim { opacity: .45; }
+      .item .turn button:disabled { opacity: .3; cursor: not-allowed; }
+
+      #outline {
+        width: 220px; background: var(--panel); border-left: 1px solid var(--line);
+        overflow-y: auto; padding: 8px; display: flex; flex-direction: column;
+      }
+      #outline > h3 {
+        margin: 2px 2px 6px; font-size: 11px; text-transform: uppercase;
+        letter-spacing: .06em; color: var(--muted);
+      }
+      #outline-list { display: flex; flex-direction: column; gap: 2px; }
+      .row {
+        display: flex; align-items: center; gap: 6px; padding: 4px 7px; font-size: 12px;
+        border: 1px solid transparent; border-radius: 5px; cursor: pointer; color: var(--text);
+      }
+      .row:hover { background: var(--panel2); }
+      .row.sel { border-color: var(--accent2); color: var(--accent2); background: var(--panel2); }
+      .row .idx { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 18px; }
+      .row .sub { margin-left: auto; color: var(--muted); font-size: 11px; }
+      .row.head { cursor: default; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: .05em; padding: 6px 2px 2px; }
+      .row.head:hover { background: none; }
+
+      #canvas-wrap { position: relative; flex: 1; min-width: 0; }
+      canvas { display: block; width: 100%; height: 100%; }
+      #hint {
+        position: absolute; left: 12px; bottom: 12px; max-width: 60%;
+        color: var(--muted); text-shadow: 0 1px 2px #000; pointer-events: none; line-height: 1.5;
+      }
+      #hint b { color: var(--text); }
+      #mode-badge {
+        position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 6px;
+        background: rgba(20,27,36,.85); border: 1px solid var(--line); font-weight: 600;
+      }
+      #error {
+        position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+        padding: 32px; color: #ffb4b4; background: var(--bg); text-align: center;
+      }
+    </style>
+    <script type="module" crossorigin src="/Boost/assets/editor-CAhDRJmA.js"></script>
+    <link rel="modulepreload" crossorigin href="/Boost/assets/default-bRdyttll.js">
+  </head>
+  <body>
+    <div id="app">
+      <div id="toolbar">
+        <div id="tools">
+          <button id="tool-select" class="tool" title="Markera (1)">⬚ Markera</button>
+          <button id="tool-place" class="tool" title="Sätt ut (2)">✛ Sätt ut</button>
+          <button id="tool-pan" class="tool" title="Flytta kartan (3)">✋ Flytta</button>
+        </div>
+        <span class="sep"></span>
+        <input type="text" id="track-name" value="Min bana" size="14" title="Banans namn" />
+        <button id="btn-new">Ny</button>
+        <button id="btn-undo" title="Ta bort senaste vägbiten">Ångra väg</button>
+        <span class="sep"></span>
+        <button id="btn-save" class="primary">Spara</button>
+        <button id="btn-download">Ladda ner</button>
+        <button id="btn-load">Ladda upp</button>
+        <button id="btn-test">Testa i spelet ↗</button>
+        <input type="file" id="file-input" accept="application/json" style="display:none" />
+        <span class="sep"></span>
+        <label class="check"><input type="checkbox" id="chk-scenery" /> Auto-dekor</label>
+        <label class="check"><input type="checkbox" id="chk-grid" checked /> Rutnät</label>
+        <label class="check"><input type="checkbox" id="chk-list" checked /> Lista</label>
+        <button id="btn-frame" title="Centrera kameran på banan">Centrera</button>
+        <span class="grow"></span>
+        <span id="readout"></span>
+      </div>
+      <div id="body">
+        <div id="palette"><input type="text" id="search" placeholder="Sök asset…" /></div>
+        <div id="canvas-wrap">
+          <canvas id="editor-canvas"></canvas>
+          <div id="mode-badge"></div>
+          <div id="hint"></div>
+          <div id="error"></div>
+        </div>
+        <div id="outline">
+          <h3>Banans innehåll</h3>
+          <div id="outline-list"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

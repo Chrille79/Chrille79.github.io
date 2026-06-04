@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boost</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #0b0f14;
+        font-family: system-ui, sans-serif;
+      }
+      #app {
+        width: 100vw;
+        height: 100vh;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      #stats {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: 20px;
+        padding: 6px 14px;
+        background: rgba(8, 12, 18, 0.55);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        color: #aeb9c6;
+        font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        pointer-events: none;
+        user-select: none;
+        white-space: nowrap;
+      }
+      #stats b {
+        color: #fff;
+        font-weight: 600;
+      }
+      #stats .lo b {
+        color: #ff8a8a;
+      }
+      #hud {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+        font-size: 14px;
+        line-height: 1.5;
+        pointer-events: none;
+        user-select: none;
+      }
+      #hud b {
+        font-size: 20px;
+      }
+      #error {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        color: #ffb4b4;
+        background: #0b0f14;
+        text-align: center;
+        font-size: 16px;
+      }
+    </style>
+    <script type="module" crossorigin src="/Boost/assets/main-DyRMjuir.js"></script>
+    <link rel="modulepreload" crossorigin href="/Boost/assets/default-bRdyttll.js">
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="gpu-canvas"></canvas>
+    </div>
+    <div id="stats">
+      <span id="stat-fps"><b>–</b> fps</span>
+      <span><b id="stat-ms">–</b> ms cpu</span>
+      <span><b id="stat-gpu">–</b> ms gpu</span>
+      <span><b id="stat-draws">–</b> draws</span>
+      <span><b id="stat-inst">–</b> instanser</span>
+      <span><b id="stat-tris">–</b> trianglar</span>
+    </div>
+    <div id="hud">
+      <div><b id="speed">0</b> km/h &nbsp; <span id="status"></span></div>
+      <div>WASD / piltangenter att köra &middot; R för att återställa</div>
+    </div>
+    <div id="error"></div>
+  </body>
+</html>
