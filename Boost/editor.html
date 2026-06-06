@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="sv">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Boost — Baneditor</title>
+    <title>Boost — Track Editor</title>
     <style>
       :root {
         --bg: #0b0f14;
@@ -107,37 +107,39 @@
         padding: 32px; color: #ffb4b4; background: var(--bg); text-align: center;
       }
     </style>
-    <script type="module" crossorigin src="/Boost/assets/editor-CAhDRJmA.js"></script>
-    <link rel="modulepreload" crossorigin href="/Boost/assets/default-bRdyttll.js">
+    <script type="module" crossorigin src="/Boost/assets/editor-ktTrggtp.js"></script>
+    <link rel="modulepreload" crossorigin href="/Boost/assets/projection-B83bLJQy.js">
+    <link rel="modulepreload" crossorigin href="/Boost/assets/default-BlGe3L3v.js">
+    <link rel="modulepreload" crossorigin href="/Boost/assets/orbitCamera-BoGYH0N4.js">
   </head>
   <body>
     <div id="app">
       <div id="toolbar">
         <div id="tools">
-          <button id="tool-select" class="tool" title="Markera (1)">⬚ Markera</button>
-          <button id="tool-place" class="tool" title="Sätt ut (2)">✛ Sätt ut</button>
-          <button id="tool-pan" class="tool" title="Flytta kartan (3)">✋ Flytta</button>
+          <button id="tool-select" class="tool" title="Select (1)">⬚ Select</button>
+          <button id="tool-place" class="tool" title="Place (2)">✛ Place</button>
+          <button id="tool-pan" class="tool" title="Pan the map (3)">✋ Pan</button>
         </div>
         <span class="sep"></span>
-        <input type="text" id="track-name" value="Min bana" size="14" title="Banans namn" />
-        <button id="btn-new">Ny</button>
-        <button id="btn-undo" title="Ta bort senaste vägbiten">Ångra väg</button>
+        <input type="text" id="track-name" value="My track" size="14" title="Track name" />
+        <button id="btn-new">New</button>
+        <button id="btn-undo" title="Remove the last road piece">Undo road</button>
         <span class="sep"></span>
-        <button id="btn-save" class="primary">Spara</button>
-        <button id="btn-download">Ladda ner</button>
-        <button id="btn-load">Ladda upp</button>
-        <button id="btn-test">Testa i spelet ↗</button>
+        <button id="btn-save" class="primary">Save</button>
+        <button id="btn-download">Download</button>
+        <button id="btn-load">Upload</button>
+        <button id="btn-test">Test in game ↗</button>
         <input type="file" id="file-input" accept="application/json" style="display:none" />
         <span class="sep"></span>
-        <label class="check"><input type="checkbox" id="chk-scenery" /> Auto-dekor</label>
-        <label class="check"><input type="checkbox" id="chk-grid" checked /> Rutnät</label>
-        <label class="check"><input type="checkbox" id="chk-list" checked /> Lista</label>
-        <button id="btn-frame" title="Centrera kameran på banan">Centrera</button>
+        <label class="check"><input type="checkbox" id="chk-scenery" /> Auto-decor</label>
+        <label class="check"><input type="checkbox" id="chk-grid" checked /> Grid</label>
+        <label class="check"><input type="checkbox" id="chk-list" checked /> List</label>
+        <button id="btn-frame" title="Center the camera on the track">Center</button>
         <span class="grow"></span>
         <span id="readout"></span>
       </div>
       <div id="body">
-        <div id="palette"><input type="text" id="search" placeholder="Sök asset…" /></div>
+        <div id="palette"><input type="text" id="search" placeholder="Search asset…" /></div>
         <div id="canvas-wrap">
           <canvas id="editor-canvas"></canvas>
           <div id="mode-badge"></div>
@@ -145,7 +147,7 @@
           <div id="error"></div>
         </div>
         <div id="outline">
-          <h3>Banans innehåll</h3>
+          <h3>Track contents</h3>
           <div id="outline-list"></div>
         </div>
       </div>

@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boost — Terrain Registry</title>
+    <style>
+      :root {
+        --bg: #0b0f14; --panel: #141b24; --panel2: #1b2530; --line: #2a3742;
+        --text: #dfe7ee; --muted: #8aa0b0; --accent: #46b1ff; --accent2: #ffb454;
+        --good: #6ddf8e;
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+        font-family: system-ui, sans-serif; font-size: 13px;
+      }
+      #app { display: flex; flex-direction: column; height: 100vh; }
+      #toolbar {
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+        padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line);
+      }
+      #toolbar .sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+      #toolbar .grow { flex: 1; }
+      #toolbar h1 { font-size: 14px; margin: 0; font-weight: 600; }
+      button, input[type="text"], input[type="number"], select, textarea {
+        font: inherit; color: var(--text); background: var(--panel2);
+        border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px;
+      }
+      button { cursor: pointer; }
+      button:hover { border-color: var(--accent); }
+      button.primary { background: var(--accent); color: #04121f; border-color: var(--accent); font-weight: 600; }
+      #count { color: var(--muted); font-variant-numeric: tabular-nums; }
+      #count b { color: var(--good); }
+
+      #body { display: flex; flex: 1; min-height: 0; }
+      #list {
+        width: 290px; background: var(--panel); border-right: 1px solid var(--line);
+        overflow-y: auto; padding: 8px;
+      }
+      #search { width: 100%; margin-bottom: 8px; }
+      .row {
+        display: flex; align-items: center; gap: 6px; padding: 5px 7px; font-size: 12px;
+        border: 1px solid transparent; border-radius: 5px; cursor: pointer;
+      }
+      .row:hover { background: var(--panel2); }
+      .row.sel { border-color: var(--accent2); background: var(--panel2); }
+      .row .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .row .tag { margin-left: auto; color: var(--muted); font-size: 10px; white-space: nowrap; }
+      .row .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line); flex: none; }
+      .row.ok .dot { background: var(--good); }
+
+      #canvas-wrap { position: relative; flex: 1; min-width: 0; }
+      canvas { display: block; width: 100%; height: 100%; }
+      #overlay {
+        position: absolute; left: 12px; top: 12px; padding: 6px 10px; border-radius: 6px;
+        background: rgba(20,27,36,.85); border: 1px solid var(--line); pointer-events: none;
+        font-variant-numeric: tabular-nums; line-height: 1.5;
+      }
+      #overlay b { color: var(--accent2); }
+      #hint {
+        position: absolute; left: 12px; bottom: 12px; color: var(--muted);
+        text-shadow: 0 1px 2px #000; pointer-events: none;
+      }
+      #dirlegend {
+        position: absolute; right: 12px; top: 12px; display: flex; flex-direction: column; gap: 3px;
+        padding: 7px 9px; border-radius: 6px; background: rgba(20,27,36,.85); border: 1px solid var(--line);
+        font-size: 11px; pointer-events: none;
+      }
+      #dirlegend span { display: flex; align-items: center; gap: 6px; }
+      #dirlegend i { width: 10px; height: 10px; border-radius: 2px; }
+
+      #form {
+        width: 290px; background: var(--panel); border-left: 1px solid var(--line);
+        overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px;
+      }
+      #form.empty > *:not(#empty-msg) { display: none; }
+      #form:not(.empty) > #empty-msg { display: none; }
+      #empty-msg { color: var(--muted); }
+      #form h2 { font-size: 13px; margin: 0; word-break: break-all; }
+      .field { display: flex; flex-direction: column; gap: 3px; }
+      .field > label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+      .field input, .field select, .field textarea { width: 100%; }
+      .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+      .meta { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1.5; }
+      label.check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+
+      /* Footprint widget: corner heights (inputs) + edge materials (toggles), laid
+         out top-down — N (+Z) at top, E (+X) at right. */
+      .fp {
+        display: grid; grid-template-columns: 54px 1fr 54px; grid-template-rows: 28px 30px 28px;
+        gap: 5px; align-items: center; justify-items: stretch; padding: 5px;
+        background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+      }
+      .fp .c { text-align: center; padding: 6px 2px; }
+      .fp .e { display: flex; align-items: center; justify-content: center; height: 100%;
+        font-size: 11px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line); user-select: none; }
+      .fp .e.grass { background: #24502a; color: #bfe6c5; }
+      .fp .e.rock { background: #4a4640; color: #e7ddcf; }
+      .fp .c-nw { grid-area: 1 / 1; } .fp .e-n { grid-area: 1 / 2; } .fp .c-ne { grid-area: 1 / 3; }
+      .fp .e-w { grid-area: 2 / 1; } .fp .mid { grid-area: 2 / 2; } .fp .e-e { grid-area: 2 / 3; }
+      .fp .c-sw { grid-area: 3 / 1; } .fp .e-s { grid-area: 3 / 2; } .fp .c-se { grid-area: 3 / 3; }
+      .fp .mid { color: var(--muted); font-size: 10px; text-align: center; }
+    </style>
+    <script type="module" crossorigin src="/Boost/assets/kits-D7oHYL5S.js"></script>
+    <link rel="modulepreload" crossorigin href="/Boost/assets/projection-B83bLJQy.js">
+    <link rel="modulepreload" crossorigin href="/Boost/assets/orbitCamera-BoGYH0N4.js">
+  </head>
+  <body>
+    <div id="app">
+      <div id="toolbar">
+        <h1>Terrain Registry</h1>
+        <span class="sep"></span>
+        <span id="count"></span>
+        <span class="grow"></span>
+        <button id="btn-revert" title="Discard unsaved changes (reload from file)">Revert</button>
+        <button id="btn-download" class="primary" title="Download terrainRegistry.json">Download JSON</button>
+      </div>
+      <div id="body">
+        <div id="list"><input type="text" id="search" placeholder="Search / filter…" /><div id="rows"></div></div>
+        <div id="canvas-wrap">
+          <canvas id="kit-canvas"></canvas>
+          <div id="overlay"></div>
+          <div id="dirlegend"></div>
+          <div id="hint">Drag to rotate · wheel to zoom · grid = level 0 (ground height)</div>
+        </div>
+        <form id="form" class="empty" autocomplete="off">
+          <div id="empty-msg">Select a piece from the list.</div>
+          <h2 id="f-asset"></h2>
+          <div class="field">
+            <label for="f-kind">What is it?</label>
+            <select id="f-kind">
+              <option value="flat">flat — flat ground</option>
+              <option value="cliff">cliff — cliff</option>
+              <option value="hill">hill — soft hill</option>
+              <option value="water">water — water</option>
+              <option value="road">road — road</option>
+              <option value="decor">decor — decor</option>
+              <option value="unknown">unknown</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-role">Role</label>
+            <select id="f-role">
+              <option value="flat">flat — area-filling</option>
+              <option value="side">side — straight edge</option>
+              <option value="cornerInner">cornerInner — inner corner</option>
+              <option value="cornerOuter">cornerOuter — outer corner</option>
+              <option value="esse">esse — s-curve</option>
+              <option value="none">none</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Corner heights & edges (top-down · N=+Z up, E=+X right)</label>
+            <div class="fp">
+              <div class="e e-n" id="e-n">N</div>
+              <div class="e e-s" id="e-s">S</div>
+              <div class="e e-w" id="e-w">W</div>
+              <div class="e e-e" id="e-e">E</div>
+              <input class="c c-nw" id="c-nw" type="number" step="1" min="0" max="3" title="NW" />
+              <input class="c c-ne" id="c-ne" type="number" step="1" min="0" max="3" title="NE" />
+              <input class="c c-sw" id="c-sw" type="number" step="1" min="0" max="3" title="SW" />
+              <input class="c c-se" id="c-se" type="number" step="1" min="0" max="3" title="SE" />
+              <div class="mid">click edge:<br>grass ↔ rock</div>
+            </div>
+          </div>
+          <div class="field" style="max-width:120px">
+            <label for="f-depth">Depth (cells)</label><input type="number" id="f-depth" step="1" min="1" />
+          </div>
+          <div class="field">
+            <label for="f-note">Note</label>
+            <textarea id="f-note" rows="2" placeholder="e.g. wrong orientation, missing corner…"></textarea>
+          </div>
+          <label class="check"><input type="checkbox" id="f-reviewed" /> Reviewed ✓</label>
+          <div class="meta" id="f-meta"></div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
