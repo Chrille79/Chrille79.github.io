@@ -97,14 +97,27 @@
         font-size: 11px; border-radius: 5px; cursor: pointer; border: 1px solid var(--line); user-select: none; }
       .fp .e.grass { background: #24502a; color: #bfe6c5; }
       .fp .e.rock { background: #4a4640; color: #e7ddcf; }
+      .fp .e.road1 { background: #3a3f57; color: #cdd6ff; }
+      .fp .e.road2 { background: #2c3a6e; color: #d7e0ff; }
+      .fp .e.bridge { background: #5a4326; color: #f0d9b5; }
       .fp .c-nw { grid-area: 1 / 1; } .fp .e-n { grid-area: 1 / 2; } .fp .c-ne { grid-area: 1 / 3; }
       .fp .e-w { grid-area: 2 / 1; } .fp .mid { grid-area: 2 / 2; } .fp .e-e { grid-area: 2 / 3; }
       .fp .c-sw { grid-area: 3 / 1; } .fp .e-s { grid-area: 3 / 2; } .fp .c-se { grid-area: 3 / 3; }
       .fp .mid { color: var(--muted); font-size: 10px; text-align: center; }
+      table.edges { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; }
+      table.edges th { color: var(--muted); font-weight: 500; text-align: left; padding: 2px 4px; font-size: 10px; }
+      table.edges td { padding: 2px 4px; }
+      table.edges .elbl { width: 28px; text-align: center; border-radius: 4px; font-weight: 600; }
+      table.edges select, table.edges input { width: 100%; }
+      table.edges .elbl.grass { background: #24502a; color: #bfe6c5; }
+      table.edges .elbl.rock { background: #4a4640; color: #e7ddcf; }
+      table.edges .elbl.road1 { background: #3a3f57; color: #cdd6ff; }
+      table.edges .elbl.road2 { background: #2c3a6e; color: #d7e0ff; }
+      table.edges .elbl.bridge { background: #5a4326; color: #f0d9b5; }
     </style>
-    <script type="module" crossorigin src="/Boost/assets/kits-D7oHYL5S.js"></script>
+    <script type="module" crossorigin src="/Boost/assets/kits-BmXmKlJk.js"></script>
     <link rel="modulepreload" crossorigin href="/Boost/assets/projection-B83bLJQy.js">
-    <link rel="modulepreload" crossorigin href="/Boost/assets/orbitCamera-BoGYH0N4.js">
+    <link rel="modulepreload" crossorigin href="/Boost/assets/terrainRegistry-DhYQlTYj.js">
   </head>
   <body>
     <div id="app">
@@ -114,6 +127,8 @@
         <span id="count"></span>
         <span class="grow"></span>
         <button id="btn-revert" title="Discard unsaved changes (reload from file)">Revert</button>
+        <input type="file" id="file-upload" accept="application/json,.json" style="display:none" />
+        <button id="btn-upload" title="Load a terrainRegistry.json from disk">Upload JSON</button>
         <button id="btn-download" class="primary" title="Download terrainRegistry.json">Download JSON</button>
       </div>
       <div id="body">
@@ -147,6 +162,12 @@
               <option value="cornerInner">cornerInner — inner corner</option>
               <option value="cornerOuter">cornerOuter — outer corner</option>
               <option value="esse">esse — s-curve</option>
+              <option value="straight">straight — road straight</option>
+              <option value="curve">curve — road curve</option>
+              <option value="incline">incline — road incline</option>
+              <option value="finish">finish — finish line</option>
+              <option value="widening">widening — width adapter</option>
+              <option value="edge">edge — cliff edge</option>
               <option value="none">none</option>
             </select>
           </div>
@@ -161,8 +182,27 @@
               <input class="c c-ne" id="c-ne" type="number" step="1" min="0" max="3" title="NE" />
               <input class="c c-sw" id="c-sw" type="number" step="1" min="0" max="3" title="SW" />
               <input class="c c-se" id="c-se" type="number" step="1" min="0" max="3" title="SE" />
-              <div class="mid">click edge:<br>grass ↔ rock</div>
+              <div class="mid">each edge:<br>road · level · material</div>
             </div>
+            <table class="edges">
+              <tr><th>edge</th><th>road</th><th>level</th><th>material</th></tr>
+              <tr data-dir="n"><td class="elbl e-n">N</td>
+                <td><select class="er" id="er-n"><option value="none">—</option><option value="single">road ×1</option><option value="double">road ×2</option><option value="bridge">bridge</option></select></td>
+                <td><input class="el" id="el-n" type="number" step="1" min="0" max="3" /></td>
+                <td><select class="em" id="em-n"><option value="grass">grass</option><option value="rock">rock</option></select></td></tr>
+              <tr data-dir="e"><td class="elbl e-e">E</td>
+                <td><select class="er" id="er-e"><option value="none">—</option><option value="single">road ×1</option><option value="double">road ×2</option><option value="bridge">bridge</option></select></td>
+                <td><input class="el" id="el-e" type="number" step="1" min="0" max="3" /></td>
+                <td><select class="em" id="em-e"><option value="grass">grass</option><option value="rock">rock</option></select></td></tr>
+              <tr data-dir="s"><td class="elbl e-s">S</td>
+                <td><select class="er" id="er-s"><option value="none">—</option><option value="single">road ×1</option><option value="double">road ×2</option><option value="bridge">bridge</option></select></td>
+                <td><input class="el" id="el-s" type="number" step="1" min="0" max="3" /></td>
+                <td><select class="em" id="em-s"><option value="grass">grass</option><option value="rock">rock</option></select></td></tr>
+              <tr data-dir="w"><td class="elbl e-w">W</td>
+                <td><select class="er" id="er-w"><option value="none">—</option><option value="single">road ×1</option><option value="double">road ×2</option><option value="bridge">bridge</option></select></td>
+                <td><input class="el" id="el-w" type="number" step="1" min="0" max="3" /></td>
+                <td><select class="em" id="em-w"><option value="grass">grass</option><option value="rock">rock</option></select></td></tr>
+            </table>
           </div>
           <div class="field" style="max-width:120px">
             <label for="f-depth">Depth (cells)</label><input type="number" id="f-depth" step="1" min="1" />

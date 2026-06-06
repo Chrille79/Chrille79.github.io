@@ -61,6 +61,54 @@
       #hud b {
         font-size: 20px;
       }
+      #race {
+        position: fixed;
+        top: 36px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 22px;
+        padding: 8px 18px;
+        background: rgba(8, 12, 18, 0.55);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        border-radius: 10px;
+        color: #cdd6e0;
+        font: 13px/1.2 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        pointer-events: none;
+        user-select: none;
+        text-align: center;
+      }
+      #race .k {
+        display: block;
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: #8aa0b0;
+        text-transform: uppercase;
+      }
+      #race b {
+        font-size: 18px;
+        color: #fff;
+        font-variant-numeric: tabular-nums;
+      }
+      #race .best b {
+        color: #ffd76a;
+      }
+      #countdown {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font: 800 120px/1 system-ui, sans-serif;
+        color: #fff;
+        text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+        pointer-events: none;
+        user-select: none;
+      }
+      #countdown:empty {
+        display: none;
+      }
       #error {
         position: fixed;
         inset: 0;
@@ -74,7 +122,7 @@
         font-size: 16px;
       }
     </style>
-    <script type="module" crossorigin src="/Boost/assets/main-BUtF5-Jt.js"></script>
+    <script type="module" crossorigin src="/Boost/assets/main-CNdfIr9E.js"></script>
     <link rel="modulepreload" crossorigin href="/Boost/assets/projection-B83bLJQy.js">
     <link rel="modulepreload" crossorigin href="/Boost/assets/default-BlGe3L3v.js">
   </head>
@@ -90,9 +138,16 @@
       <span><b id="stat-inst">–</b> instances</span>
       <span><b id="stat-tris">–</b> triangles</span>
     </div>
+    <div id="race">
+      <div><span class="k">Lap</span><b id="lap">1</b></div>
+      <div><span class="k">Time</span><b id="laptime">0.000</b></div>
+      <div class="best"><span class="k">Best</span><b id="best">—</b></div>
+      <div><span class="k">Boost</span><b id="boost">—</b></div>
+    </div>
+    <div id="countdown"></div>
     <div id="hud">
       <div><b id="speed">0</b> km/h &nbsp; <span id="status"></span></div>
-      <div>WASD / arrow keys to drive &middot; R to reset</div>
+      <div>WASD to drive &middot; Space to boost &middot; R to restart</div>
     </div>
     <div id="error"></div>
   </body>
