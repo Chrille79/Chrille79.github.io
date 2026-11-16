@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Glimmer – baneditor</title>
+<style>
+  :root{--bg:#1b1f27;--panel:#252b36;--panel2:#2e3542;--line:#3b4454;--text:#e6e9ef;--dim:#9aa4b5;--accent:#5fb2ff;--warn:#ff6b5e}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:13px/1.35 "Segoe UI",system-ui,sans-serif;overflow:hidden}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  #app{display:grid;grid-template-rows:auto auto 1fr auto;height:100%}
+
+  /* meny */
+  #menubar{display:flex;align-items:center;gap:2px;background:var(--panel);border-bottom:1px solid var(--line);padding:0 6px}
+  #menubar .title{margin-left:auto;color:var(--dim);padding:0 8px}
+  .menu{position:relative}
+  .menu>button{padding:6px 10px;border-radius:4px}
+  .menu>button:hover,.menu.open>button{background:var(--panel2)}
+  .drop{display:none;position:absolute;left:0;top:100%;min-width:230px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .menu.open .drop{display:block}
+  .drop button{display:flex;width:100%;gap:8px;padding:5px 8px;border-radius:4px;text-align:left}
+  .drop button:hover{background:var(--accent);color:#08131f}
+  .drop .mark{width:14px;flex:none}
+  .drop .key{margin-left:auto;color:var(--dim)}
+  .drop button:hover .key{color:inherit}
+  .drop hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+  .drop .head{padding:4px 8px 2px;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+
+  /* snabbrad */
+  #toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:var(--panel);border-bottom:1px solid var(--line);padding:5px 8px}
+  .group{display:flex;align-items:center;gap:2px;padding-right:8px;margin-right:2px;border-right:1px solid var(--line)}
+  .group:last-child{border-right:0}
+  .group .label{color:var(--dim);margin-right:4px}
+  .tb{padding:5px 9px;border-radius:5px;border:1px solid transparent}
+  .tb:hover{background:var(--panel2)}
+  .tb.on{background:var(--accent);color:#08131f;font-weight:600}
+  .tb:disabled{opacity:.35;cursor:default}
+  .layer{display:flex;align-items:center;border:1px solid var(--line);border-radius:5px;overflow:hidden;margin-right:4px}
+  .layer button{padding:5px 8px}
+  .layer .eye{border-right:1px solid var(--line);color:var(--dim)}
+  .layer .eye.on{color:var(--text)}
+  .layer.edit{border-color:var(--accent)}
+  .layer.edit .name{background:var(--accent);color:#08131f;font-weight:600}
+
+  /* arbetsyta */
+  #work{display:grid;grid-template-columns:150px 1fr;min-height:0}
+  #palette{background:var(--panel);border-right:1px solid var(--line);padding:8px;overflow:auto}
+  #palette h3{margin:10px 0 6px;font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  #palette h3:first-child{margin-top:0}
+  .item{display:flex;align-items:center;gap:8px;width:100%;padding:4px;border-radius:6px;border:1px solid transparent;text-align:left}
+  .item:hover{background:var(--panel2)}
+  .item.on{border-color:var(--accent);background:var(--panel2)}
+  .item canvas{width:30px;height:30px;border-radius:4px;background:#11151c;flex:none}
+  .item small{color:var(--dim);margin-left:auto;font-family:Consolas,monospace}
+  #main{position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;background:#12151b}
+  #scroll{flex:0 1 auto;height:var(--gridh,300px);max-height:55%;overflow:auto;min-width:0}
+  #grid{display:block;cursor:crosshair;touch-action:none}
+
+  /* 3D-vy: dockad under rutnätet, stor över arbetsytan eller minimerad till en rad */
+  #preview{flex:0 1 auto;display:flex;flex-direction:column;min-height:0;overflow:hidden;background:var(--panel);border-top:1px solid var(--line)}
+  /* Dockad: direkt under rutnätet och högst sexton rutor hög, så att 3D-vyn kan visa samma kolumner som rutnätet. */
+  #preview.dock{flex:1 1 auto;max-height:calc(var(--cell,32px) * 16);min-height:150px}
+  #preview header{display:flex;align-items:center;gap:4px;padding:2px 4px 2px 10px;font-weight:600}
+  #preview header span{margin-right:auto}
+  #preview iframe{border:0;display:block;width:100%;flex:1;min-height:0;background:#000}
+  #preview.large{position:absolute;inset:0;z-index:10}
+  #preview.min iframe{display:none}
+
+  #status{display:flex;gap:16px;background:var(--panel);border-top:1px solid var(--line);padding:4px 10px;color:var(--dim)}
+  #status .warn{color:var(--warn)}
+  #status .right{margin-left:auto}
+
+  dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:340px;max-width:min(760px,92vw)}
+  dialog::backdrop{background:rgba(0,0,0,.5)}
+  dialog h2{margin:0 0 12px;font-size:15px}
+  dialog label{display:block;margin:8px 0 3px;color:var(--dim)}
+  dialog input,dialog textarea,dialog select{width:100%;background:#12151b;color:var(--text);border:1px solid var(--line);border-radius:5px;padding:6px 8px;font:inherit}
+  dialog textarea{height:260px;font:12px/1.25 Consolas,monospace;white-space:pre;overflow:auto}
+  dialog .row{display:flex;gap:10px}
+  dialog .row>div{flex:1}
+  dialog .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+  dialog .actions button,.list button{padding:6px 12px;border-radius:5px;border:1px solid var(--line)}
+  dialog .actions button.primary{background:var(--accent);color:#08131f;border-color:var(--accent);font-weight:600}
+  .list{display:flex;flex-direction:column;gap:4px;max-height:300px;overflow:auto}
+  .list .entry{display:flex;gap:6px}
+  .list .entry button:first-child{flex:1;text-align:left}
+  .hint{color:var(--dim);margin:6px 0 0}
+</style>
+  <script type="module" crossorigin src="./assets/editor-CG7LWHz1.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="./assets/level-TZs1wL_-.js">
+</head>
+<body>
+<div id="app">
+  <nav id="menubar"></nav>
+  <div id="toolbar"></div>
+  <div id="work">
+    <aside id="palette"></aside>
+    <div id="main">
+      <div id="scroll"><canvas id="grid"></canvas></div>
+      <section id="preview" class="dock">
+        <header>
+          <span>3D-vy</span>
+          <button class="tb" id="pvPlay" title="Starta om 3D-vyn vid markören och styr figuren med piltangenterna">Provspela</button>
+          <button class="tb" id="pvSize" title="Växla mellan dockad och stor 3D-vy">Större</button>
+          <button class="tb" id="pvMin" title="Minimera 3D-vyn medan du målar">Minimera</button>
+        </header>
+        <iframe title="3D-förhandsvisning"></iframe>
+      </section>
+    </div>
+  </div>
+  <footer id="status"></footer>
+</div>
+<dialog id="dlg"></dialog>
+</body>
+</html>
