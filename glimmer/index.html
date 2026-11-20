@@ -23,6 +23,10 @@
   #perf b.ok{color:#7be08a} #perf b.warn{color:#ffd166} #perf b.bad{color:#ff6b5e}
   .perf #perf{display:flex}
   .perf #themes{top:34px}
+  #life{position:fixed;top:12px;left:12px;color:#fff;font-weight:800;font-size:20px;letter-spacing:2px;white-space:pre;background:rgba(30,50,70,.45);padding:4px 12px;border-radius:10px;text-shadow:0 1px 0 rgba(0,0,0,.3)}
+  .perf #life{top:34px}
+  #sign{position:fixed;inset:0;display:grid;place-items:center;color:#fff;font-size:44px;font-weight:800;text-shadow:0 3px 0 rgba(0,0,0,.35);pointer-events:none}
+  .embed #life,.embed #sign{display:none}
   /* Pekstyrning: halvgenomskinliga reglage, bara på pekskärm (klassen touch sätts i main.js). */
   #pad,#jump,#rotate{display:none}
   .touch{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -39,17 +43,19 @@
   @media (orientation:portrait){.touch #rotate{display:grid;position:fixed;inset:0;place-items:center;text-align:center;padding:24px;
     background:rgba(18,26,40,.88);color:#fff;font-size:20px;font-weight:800;z-index:9}}
 </style>
-  <script type="module" crossorigin src="./assets/main-jVAweZIh.js"></script>
+  <script type="module" crossorigin src="./assets/main-Dr5ORP3N.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="./assets/figur-cruu6UGP.js">
-  <link rel="modulepreload" crossorigin href="./assets/level-TZs1wL_-.js">
+  <link rel="modulepreload" crossorigin href="./assets/gnome-B8Qg_9Pk.js">
+  <link rel="modulepreload" crossorigin href="./assets/level-DRIMsCGR.js">
 </head>
 <body>
 <div id="loading">Laddar…</div>
 <div id="perf"></div>
 <div id="themes"></div>
+<div id="life" style="display:none"></div>
+<div id="sign" style="display:none"></div>
 <a id="edit" href="editor.html">Baneditor (E)</a>
-<div id="hint">← → springa · mellanslag hoppa · 1–2 eller knapparna byter dag och kväll · E editor · F mätrad</div>
+<div id="hint">← → springa · mellanslag hoppa · E editor · F mätrad</div>
 <div id="pad"><span class="l">◀</span><span class="r">▶</span></div>
 <div id="jump">▲</div>
 <div id="rotate">Vrid enheten till liggande läge</div>

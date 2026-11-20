@@ -1,0 +1,17 @@
+Ultimate Monsters Pack av Quaternius (https://quaternius.com), CC0 1.0.
+Hämtad från Quaternius delade mapp på Google Drive 2026-11-19. Licenstexten nedan följde med paketet
+(rubriken i den säger "Ultimate Platformer Pack", men den ligger i monsterpaketets mapp).
+Färgerna ligger som en palettbild inbäddad i varje fil.
+
+------------------------------------------------------
+Ultimate Platformer Pack by @Quaternius
+Consider supporting me on Patreon, even $1 helps me a lot!
+
+https://www.patreon.com/quaternius
+-------------------------------------------------------
+
+License:
+CC0 1.0 Universal (CC0 1.0) 
+Public Domain Dedication
+https://creativecommons.org/publicdomain/zero/1.0/
+
